@@ -20,7 +20,7 @@ from data import COLORS, TEXTURES, MOODS, PLACES, ASSOCIATIONS, PHRASES
 
 # ── Настройки ──────────────────────────────────────────────────────────────────
 # BOT_TOKEN = os.getenv("BOT_TOKEN", "PASTE_YOUR_TOKEN_HERE")
-BOT_TOKEN = "8690437432:AAEsybGgKHuPGL09NmJ3VmEuzgNUNHqh5EY"
+BOT_TOKEN = ""
 
 logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
