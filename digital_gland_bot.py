@@ -1,8 +1,9 @@
 """
 Телеграм-бот для генерации тем лук-челленджа.
-Зависимости: pip install python-telegram-bot==20.*
-Запуск:  BOT_TOKEN=<ваш_токен> python bot.py
-         или задайте токен прямо в переменной BOT_TOKEN ниже.
+Зависимости: pip install -r requirements.txt
+Запуск:  BOT_TOKEN=<ваш_токен> python digital_gland_bot.py
+         или в Docker: docker build -t digital_gland_bot . && docker run -e BOT_TOKEN=<ваш_токен> digital_gland_bot
+Токен никогда не пишем в код: репозиторий публичный.
 """
 
 import random
@@ -16,11 +17,11 @@ from telegram.ext import (
     ContextTypes,
 )
 
+from botstats import track
 from data import COLORS, TEXTURES, MOODS, PLACES, ASSOCIATIONS, PHRASES
 
 # ── Настройки ──────────────────────────────────────────────────────────────────
-# BOT_TOKEN = os.getenv("BOT_TOKEN", "PASTE_YOUR_TOKEN_HERE")
-BOT_TOKEN = ""
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
@@ -74,7 +75,12 @@ async def challenge(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 # ── Точка входа ────────────────────────────────────────────────────────────────
 def main() -> None:
+    if not BOT_TOKEN:
+        raise SystemExit("BOT_TOKEN не задан: возьмите токен у @BotFather и передайте его в переменной окружения")
+    logging.getLogger("httpx").setLevel(logging.WARNING)  # иначе каждый запрос к Telegram попадает в лог
+
     app = ApplicationBuilder().token(BOT_TOKEN).build()
+    track(app)  # статистика для botwatch (без BOTWATCH_URL ничего не делает)
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help_command))
